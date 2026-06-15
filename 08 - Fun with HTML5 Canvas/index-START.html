@@ -8,6 +8,56 @@
 <body>
 <canvas id="draw" width="800" height="800"></canvas>
 <script>
+  const canvas = document.querySelector('#draw');
+  const ctx = canvas.getContext('2d'); // get the 2D drawing context
+  canvas.width = window.innerWidth; // set the width of the canvas to the width of the window
+  canvas.height = window.innerHeight; // set the height of the canvas to the height of the window
+  ctx.strokeStyle = '#BADA55'; // set the stroke color to a bright green
+  ctx.lineJoin = 'round'; // set the line join style to round
+  ctx.lineCap = 'round'; // set the line cap style to round
+  ctx.lineWidth = 100; // set the line width to 10 pixels
+  ctx.globalCompositeOperation = 'screen'; // set the global composite operation to multiply
+
+  let isDrawing = false; // set a flag to indicate whether the user is currently drawing
+  let lastX = 0; // set a variable to store the last X coordinate of
+  let lastY = 0; // set a variable to store the last Y coordinate of
+  let hue = 0; // set a variable to store the current hue value
+  let direction = true; // set a variable to store the current direction of the line width change
+ 
+  function draw(e) {
+    if (!isDrawing) return; // stop the function if the user is not currently drawing
+    console.log(e); // log the event object to the console
+    ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`; // set the stroke color to a hue based on the current hue value
+    ctx.beginPath(); // start a new path
+    //start from
+    ctx.moveTo(lastX, lastY); // move the pen to the last X and Y coordinates
+    //go to
+    ctx.lineTo(e.offsetX, e.offsetY); // draw a line to the current X and Y coordinates
+    ctx.stroke(); // stroke the path
+    [lastX, lastY] = [e.offsetX, e.offsetY]; // update the last X and Y coordinates to the current X and Y coordinates
+    hue++; // increment the hue value
+    if (hue >= 360) { // reset the hue value if it exceeds 360
+      hue = 0;
+    }
+    if (ctx.lineWidth >= 100 || ctx.lineWidth <= 1) { // reverse the direction of the line width change if it exceeds the limits
+      direction = !direction;
+    }
+    if (direction) { // increase the line width if the direction is true
+      ctx.lineWidth++;
+    } else { // decrease the line width if the direction is false
+      ctx.lineWidth--;  
+
+  }
+  }
+canvas.addEventListener('mousemove', draw); // add an event listener to the canvas that listens for the mousemove event and calls the draw function when it occurs
+canvas.addEventListener('mousedown', (e) => {
+  isDrawing = true;
+  [lastX, lastY] = [e.offsetX, e.offsetY];
+}); // add an event listener
+
+
+canvas.addEventListener('mouseup', () => isDrawing = false); // add an event listener
+canvas.addEventListener('mouseout', () => isDrawing = false); // add an event listener
 </script>
 
 <style>
